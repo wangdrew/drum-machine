@@ -1,26 +1,16 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Sequencer from './Sequencer';
 
 function App() {
+  const pads = ['hh_close', 'hh_open', 'snare', 'kick', 'clap', 'tom', 'crash']
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <div style={{ height: '100px' }}>
+        <Sequencer columns={16} pads={pads} />
+      </div>
+    </>
+  )
 }
-
 export default App;

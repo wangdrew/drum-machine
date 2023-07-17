@@ -1,4 +1,13 @@
-# Getting Started with Create React App
+# Drum machine
+Written in react + typescript
+
+## Getting started:
+* Install `yarn`:
+https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable
+* `yarn install`: Installs npm dependecies
+* `yarn start`: Runs the project in dev mode
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
