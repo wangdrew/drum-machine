@@ -28,8 +28,8 @@ const ButtonPad: React.FC<ButtonPadProps> = (props) => {
         }
     }
     return (
-        <Card variant="outlined" onClick={() => {playSound()}}>
-            <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>
+        <Card className="pad" variant="outlined" onClick={() => {playSound()}}>
+            <Typography sx={{ fontSize: 12 }} color="text.secondary" gutterBottom>
                 {props.padName}
             </Typography>
         </Card>

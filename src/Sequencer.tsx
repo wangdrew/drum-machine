@@ -14,7 +14,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
         return [...Array(props.columns)]
             .map((x, i) => {
                 return (
-                    <Grid key={`${padName}-${i}`} xs={1} >
+                    <Grid key={`${padName}-${i}`} item xs={1} >
                         <ButtonPad padName={padName} />
                     </Grid>
                 )
@@ -22,7 +22,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     }
     const pads = props.pads.map((padName, idx) => { return row(padName) })
     return (
-        <Grid container spacing={2} columns={props.columns}>
+        <Grid className="Sequencer" container spacing={2} columns={props.columns}>
             {pads}
         </Grid>
     )
