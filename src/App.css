@@ -8,7 +8,20 @@
   padding: 15px;
   margin: 3px;
 }
-
+.controls {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.controls>span {
+  border: solid 2px #DDD;
+  border-radius: 5px;
+  padding: 10px;
+  padding-left: 20px; padding-right: 20px;
+  margin-left: 5px; margin-right: 5px;
+  display: inline-block;
+  cursor: pointer;
+  width: 10px;
+}
 .pad:hover {
   background-color: #DADADA;
 }
