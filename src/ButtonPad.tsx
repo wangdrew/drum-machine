@@ -1,4 +1,5 @@
 import { Card, Typography } from "@mui/material"
+import { useEffect } from 'react';
 
 import hh_closed from './assets/808/hh_closed.wav'
 import hh_open from './assets/808/hh_open.wav'
@@ -23,18 +24,29 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
     col,
     state,
     padName,
-    toggleState
+    toggleState,
+    playing,
+    position
 }) => {
     const playSound = () => {
         const url = drum_808.get(padName)
         if (url) {
             new Audio(url).play()
         }
-        toggleState(row, col)
     }
-    const style = state ? { backgroundColor: 'red' } : { backgroundColor: 'white' }
+    useEffect(() => {
+        if (state && playing && position === col) playSound();
+    }, [playing, position])
+
+    //Compute styles
+    let bgColor = 'white';
+    if (position == col) bgColor = playing ? '#CCC' : '#DDD';
+    if (state) bgColor = 'aquamarine';
+    let style = {backgroundColor: bgColor}
+    if (col % 4 == 0) style = {...style, ...{borderLeftWidth: 3}};
+
     return (
-        <Card style={style} className="pad" variant="outlined" onClick={() => { playSound() }}>
+        <Card style={style} className="pad" variant="outlined" onClick={() => { playSound(); toggleState(row, col) }}>
             <Typography sx={{ fontSize: 12 }} color="text.secondary" gutterBottom>
                 {padName}
             </Typography>
@@ -46,8 +58,10 @@ export interface ButtonPadProps {
     row: number,
     col: number,
     state: boolean,
-    padName: string
+    padName: string,
     toggleState: (r: number, c: number) => void,
+    playing: boolean,
+    position: number,
 }
 
 export default ButtonPad;
