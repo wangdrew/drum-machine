@@ -4,10 +4,10 @@
 
 .pad {
   cursor: pointer;
+  user-select: none;
   padding: 15px;
   margin: 3px;
 }
-
 .controls {
   margin-bottom: 30px;
   text-align: center;
@@ -21,4 +21,7 @@
   display: inline-block;
   cursor: pointer;
   width: 10px;
+}
+.pad:hover {
+  background-color: #DADADA;
 }
