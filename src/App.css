@@ -4,6 +4,11 @@
 
 .pad {
   cursor: pointer;
+  user-select: none;
   padding: 15px;
   margin: 3px;
+}
+
+.pad:hover {
+  background-color: #DADADA;
 }
