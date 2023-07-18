@@ -18,26 +18,36 @@ const drum_808: Map<string, string> = new Map<string, string>([
     ['tom', tom],
     ['crash', crash]
 ])
-
-const ButtonPad: React.FC<ButtonPadProps> = (props) => {
+const ButtonPad: React.FC<ButtonPadProps> = ({
+    row,
+    col,
+    state,
+    padName,
+    toggleState
+}) => {
     const playSound = () => {
-        const url = drum_808.get(props.padName)
+        const url = drum_808.get(padName)
         if (url) {
-            console.log(url)
             new Audio(url).play()
         }
+        toggleState(row, col)
     }
+    const style = state ? { backgroundColor: 'red' } : { backgroundColor: 'white' }
     return (
-        <Card className="pad" variant="outlined" onClick={() => {playSound()}}>
+        <Card style={style} className="pad" variant="outlined" onClick={() => { playSound() }}>
             <Typography sx={{ fontSize: 12 }} color="text.secondary" gutterBottom>
-                {props.padName}
+                {padName}
             </Typography>
         </Card>
     )
 }
 
 export interface ButtonPadProps {
+    row: number,
+    col: number,
+    state: boolean,
     padName: string
+    toggleState: (r: number, c: number) => void,
 }
 
 export default ButtonPad;
