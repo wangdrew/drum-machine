@@ -77,8 +77,8 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     return (
         <div className="Sequencer">
             <div className="controls">
-                <span onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
-                <span onClick={() => {
+                <span className="btn" onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
+                <span className="btn" onClick={() => {
                     setPosition(0)
                     setPlaying(false)
                     stopPulse()

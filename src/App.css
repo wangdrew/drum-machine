@@ -12,7 +12,7 @@
   margin-bottom: 30px;
   text-align: center;
 }
-.controls>span {
+.controls>.btn {
   border: solid 2px #DDD;
   border-radius: 5px;
   padding: 10px;
