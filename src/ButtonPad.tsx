@@ -34,6 +34,11 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
             new Audio(url).play()
         }
     }
+    const clickSound = () => {
+        if (!playing) playSound();
+        toggleState(row, col);
+    }
+
     useEffect(() => {
         if (state && playing && position === col) playSound();
     }, [playing, position])
@@ -46,7 +51,7 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
     if (col % 4 == 0) style = {...style, ...{borderLeftWidth: 3}};
 
     return (
-        <Card style={style} className="pad" variant="outlined" onClick={() => { playSound(); toggleState(row, col) }}>
+        <Card style={style} className="pad" variant="outlined" onClick={clickSound}>
             <Typography sx={{ fontSize: 12 }} color="text.secondary" gutterBottom>
                 {padName}
             </Typography>

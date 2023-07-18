@@ -11,16 +11,38 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     const [playing, setPlaying] = useState<boolean>(false);
     const [position, setPosition] = useState<number>(0);
 
+
     const toggleState = (r: number, c: number) => {
         const newGrid = JSON.parse(JSON.stringify(grid)) // cheap stupid way to copy a 2D grid
         newGrid[r][c] = !grid[r][c]
         setGrid(newGrid)
     }
+    const togglePlaying = () => setPlaying(!playing);
+
+    const handleKeyPress = (e: KeyboardEvent)  => {
+            if (e.key === " ") {
+                togglePlaying();
+                e.preventDefault();
+            }
+            else if (e.key === "Enter") setPosition(0);
+        }
 
     useEffect(() => {
         const timer = setTimeout(() => playing && setPosition((position + 1) % 16), 160);
         return () => clearTimeout(timer);
-    }, [position, playing])
+    }, [position, playing]);
+
+    useEffect(() => {
+        // Add event listener for keyboard shortcuts
+        document.addEventListener('keydown', handleKeyPress);
+
+        // Remove the event listener
+        return () => {
+          document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [handleKeyPress])
+
+    
 
     const row = (padName: string, rowIdx: number) => {
         return [...Array(props.columns)]
@@ -44,7 +66,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     return (
         <div className="Sequencer">
             <div className="controls">
-                <span onClick={() => setPlaying(!playing)}>{playing ? "⏸" : "▶"}</span>
+                <span onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
                 <span onClick={() => {setPosition(0); setPlaying(false)}}>⏹</span>
             </div>
             <Grid container spacing={2} columns={props.columns}>
