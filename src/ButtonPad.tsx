@@ -39,16 +39,14 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
         toggleState(row, col);
     }
 
-    useEffect(() => {
-        if (state && playing && position === col) playSound();
-    }, [playing, position])
+    if (state && playing && position === col) playSound();
 
     //Compute styles
     let bgColor = 'white';
-    if (position == col) bgColor = playing ? '#CCC' : '#DDD';
+    if (position === col) bgColor = playing ? '#CCC' : '#DDD';
     if (state) bgColor = 'aquamarine';
-    let style = {backgroundColor: bgColor}
-    if (col % 4 == 0) style = {...style, ...{borderLeftWidth: 3}};
+    let style = { backgroundColor: bgColor }
+    if (col % 4 === 0) style = { ...style, ...{ borderLeftWidth: 3 } };
 
     return (
         <Card style={style} className="pad" variant="outlined" onClick={clickSound}>
