@@ -47,16 +47,10 @@ class Player {
 	 */
 	scheduleNextStep() {
 		if (this.playStartTime < 0) return; //Workaround since clearTimeout does not work
-		this.position++;
+		this.updatePosition(this.position + 1);
 		console.log("SCHEDULING: " + this.position);
 		hh_close.start(this.playStartTime + bpmToInterval(this.bpm) * this.position);
 		this.nextStepTimeout = setTimeout(this.scheduleNextStep.bind(this), bpmToInterval(this.bpm) * 1000);
-		
-
-		//TRIED THIS- IT DOESN'T WORK. TIMING IS HELLA WONKY
-		/*for (var i=0; i < 21; i++)
-			Tone.Transport.schedule(() => hh_close.start(), "0:0:" + i);
-		Tone.Transport.start();*/
 	}
 
 	pause() {
