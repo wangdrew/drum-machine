@@ -39,10 +39,6 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
         toggleState(row, col);
     }
 
-    useEffect(() => {
-        if (state && playing && position === col) playSound();
-    }, [playing, position])
-
     //Compute styles
     let bgColor = 'white';
     if (position == col) bgColor = playing ? '#CCC' : '#DDD';
@@ -62,7 +58,7 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
 export interface ButtonPadProps {
     row: number,
     col: number,
-    state: boolean,
+    state: number,
     padName: string,
     toggleState: (r: number, c: number) => void,
     playing: boolean,

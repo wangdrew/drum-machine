@@ -1,36 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { Grid } from '@mui/material';
 import ButtonPad from './ButtonPad';
+import Player from './Player'
 
 
 const Sequencer: React.FC<SequencerProps> = (props) => {
     const COLS = props.columns
     const ROWS = props.pads.length
+    const player = new Player(ROWS, COLS, 120, (position: number) => {
+        setPosition(position);
+    })
 
-    const [grid, setGrid] = useState<boolean[][]>([...Array(ROWS).fill(Array(COLS).fill(false))])
+    const [grid, setGrid] = useState<number[][]>([...Array(ROWS).fill(Array(COLS).fill(0))])
     const [playing, setPlaying] = useState<boolean>(false);
     const [position, setPosition] = useState<number>(0);
 
 
     const toggleState = (r: number, c: number) => {
         const newGrid = JSON.parse(JSON.stringify(grid)) // cheap stupid way to copy a 2D grid
-        newGrid[r][c] = !grid[r][c]
+        newGrid[r][c] = +!grid[r][c]
         setGrid(newGrid)
     }
-    const togglePlaying = () => setPlaying(!playing);
+    const togglePlaying = () => { 
+        playing ? player.pause() : player.play();
+        setPlaying(!playing)
+    };
 
     const handleKeyPress = (e: KeyboardEvent)  => {
-            if (e.key === " ") {
-                togglePlaying();
-                e.preventDefault();
-            }
-            else if (e.key === "Enter") setPosition(0);
+        if (e.key === " ") {
+            togglePlaying();
+            e.preventDefault();
         }
+        else if (e.key === "Enter") setPosition(0);
+    }
 
     useEffect(() => {
-        const timer = setTimeout(() => playing && setPosition((position + 1) % 16), 160);
-        return () => clearTimeout(timer);
-    }, [position, playing]);
+        player.updateGrid(grid)
+    }, [grid]);
 
     useEffect(() => {
         // Add event listener for keyboard shortcuts
@@ -67,7 +73,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
         <div className="Sequencer">
             <div className="controls">
                 <span onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
-                <span onClick={() => {setPosition(0); setPlaying(false)}}>⏹</span>
+                <span onClick={() => {setPlaying(false); player.reset()}}>⏹</span>
             </div>
             <Grid container spacing={2} columns={props.columns}>
                 {pads}
