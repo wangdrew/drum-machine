@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Grid } from '@mui/material';
 import ButtonPad from './ButtonPad';
-import Player from './Player'
+import * as Player from './Player'
 
 
 const Sequencer: React.FC<SequencerProps> = (props) => {
     const COLS = props.columns
     const ROWS = props.pads.length
-    const player = new Player(ROWS, COLS, 120, (position: number) => {
-        setPosition(position);
-    })
+    
 
     const [grid, setGrid] = useState<number[][]>([...Array(ROWS).fill(Array(COLS).fill(0))])
     const [playing, setPlaying] = useState<boolean>(false);
@@ -22,7 +20,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
         setGrid(newGrid)
     }
     const togglePlaying = () => { 
-        playing ? player.pause() : player.play();
+        playing ? Player.pause() : Player.play(position);
         setPlaying(!playing)
     };
 
@@ -35,7 +33,13 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     }
 
     useEffect(() => {
-        player.updateGrid(grid)
+        Player.init(ROWS, COLS, 120, (position: number) => {
+            setPosition(position);
+        })
+    }, []);
+
+    useEffect(() => {
+        Player.updateGrid(grid)
     }, [grid]);
 
     useEffect(() => {
@@ -73,7 +77,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
         <div className="Sequencer">
             <div className="controls">
                 <span onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
-                <span onClick={() => {setPlaying(false); player.reset()}}>⏹</span>
+                <span onClick={() => {setPlaying(false); Player.reset()}}>⏹</span>
             </div>
             <Grid container spacing={2} columns={props.columns}>
                 {pads}
