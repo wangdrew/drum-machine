@@ -12,6 +12,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     const [grid, setGrid] = useState<number[][]>([...Array(ROWS).fill(Array(COLS).fill(0))])
     const [playing, setPlaying] = useState<boolean>(false);
     const [position, setPosition] = useState<number>(0);
+    const [dragRow, setDragRow] = useState<number>(-1);
 
 
     const toggleState = (r: number, c: number) => {
@@ -19,17 +20,22 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
         newGrid[r][c] = +!grid[r][c]
         setGrid(newGrid)
     }
+
     const togglePlaying = () => { 
         playing ? Player.pause() : Player.play(position);
         setPlaying(!playing)
     };
 
-    const handleKeyPress = (e: KeyboardEvent)  => {
+    const handleKeyPress = (e: KeyboardEvent) => {
         if (e.key === " ") {
             togglePlaying();
             e.preventDefault();
         }
         else if (e.key === "Enter") setPosition(0);
+    }
+
+    const handleMouse = (e: MouseEvent) => {
+        console.log(e.type);
     }
 
     useEffect(() => {
@@ -52,8 +58,6 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
         };
     }, [handleKeyPress])
 
-    
-
     const row = (padName: string, rowIdx: number) => {
         return [...Array(props.columns)]
             .map((x, colIdx) => {
@@ -66,6 +70,8 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
                             toggleState={toggleState}
                             state={grid[rowIdx][colIdx]}
                             playing={playing}
+                            dragRow={dragRow}
+                            setDragRow={setDragRow}
                             position={position}
                         />
                     </Grid>

@@ -26,6 +26,8 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
     padName,
     toggleState,
     playing,
+    dragRow,
+    setDragRow,
     position
 }) => {
     const playSound = () => {
@@ -35,8 +37,15 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
         }
     }
     const clickSound = () => {
-        if (!playing) playSound();
+        if (!playing && dragRow === -1) playSound();
         toggleState(row, col);
+        setDragRow(row);
+    }
+    const stopDrag = () => {
+        setDragRow(-1);
+    }
+    const onHover = () => {
+        if (dragRow === row) clickSound();
     }
 
     //Compute styles
@@ -47,7 +56,7 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
     if (col % 4 == 0) style = {...style, ...{borderLeftWidth: 3}};
 
     return (
-        <Card style={style} className="pad" variant="outlined" onClick={clickSound}>
+        <Card style={style} className="pad" variant="outlined" onMouseDown={clickSound} onMouseUp={stopDrag} onMouseEnter={onHover}>
             <Typography sx={{ fontSize: 12 }} color="text.secondary" gutterBottom>
                 {padName}
             </Typography>
@@ -62,6 +71,8 @@ export interface ButtonPadProps {
     padName: string,
     toggleState: (r: number, c: number) => void,
     playing: boolean,
+    dragRow: number,
+    setDragRow: (r: number) => void,
     position: number,
 }
 
