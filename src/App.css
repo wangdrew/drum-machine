@@ -25,3 +25,9 @@
 .pad:hover {
   background-color: #DADADA;
 }
+p.cnt {
+  font-size: 12px;
+  position: absolute;
+  padding-left: 70px;
+  margin-top: -10px;
+}

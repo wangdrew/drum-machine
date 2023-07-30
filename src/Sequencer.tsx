@@ -7,17 +7,25 @@ import * as Player from './Player'
 const Sequencer: React.FC<SequencerProps> = (props) => {
     const COLS = props.columns
     const ROWS = props.pads.length
-    
 
     const [grid, setGrid] = useState<number[][]>([...Array(ROWS).fill(Array(COLS).fill(0))])
     const [playing, setPlaying] = useState<boolean>(false);
     const [position, setPosition] = useState<number>(0);
+    
+    /* State variables for handling mouse drag. Would love suggestions on how to clean this up lol */
+    // Row / column in which the drag is active:
     const [dragRow, setDragRow] = useState<number>(-1);
+    const [dragCol, setDragCol] = useState<number>(-1);
+    // Starting position (in Pixels) of the Y drag and what state the box is in at the beginning
+    const [dragYStartPos, setDragYStartPos] = useState<number>(-1);
+    const [dragYStartState, setDragYStartState] = useState<number>(0);
+    // Whether or not a drag is actively happening in the y dimension
+    const [draggingY, setDraggingY] = useState<boolean>(false);
+    /* End drag-related state variables */
 
-
-    const toggleState = (r: number, c: number) => {
+    const changeState = (r: number, c: number, value: number=-1) => {
         const newGrid = JSON.parse(JSON.stringify(grid)) // cheap stupid way to copy a 2D grid
-        newGrid[r][c] = +!grid[r][c]
+        newGrid[r][c] = (value < 0) ? +!grid[r][c] : value;
         setGrid(newGrid)
     }
 
@@ -31,11 +39,32 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
             togglePlaying();
             e.preventDefault();
         }
-        else if (e.key === "Enter") setPosition(0);
+        else if (e.key === "Enter") {
+            setPlaying(false); Player.reset();
+        }
     }
 
-    const handleMouse = (e: MouseEvent) => {
-        console.log(e.type);
+    const resetDrag = (e: any) => {
+        if (e.type == "mouseup") {
+            setDragRow(-1);
+            setDragCol(-1);
+            setDragYStartPos(-1);
+            setDraggingY(false);
+        }
+    }
+
+    const startDrag = (e: any) => {
+        setDragYStartPos(e.clientY);
+    }
+
+    const handleMouseMove = (e: any) => {
+        const dist = -1 * Math.floor((e.clientY - dragYStartPos) / 30);
+        if (dragYStartPos > -1 && dragRow > -1 && (draggingY || dist > 1 || dragYStartState > 1)) {
+            const newGrid = JSON.parse(JSON.stringify(grid));
+            newGrid[dragRow][dragCol] = dist - 1 + dragYStartState;
+            setGrid(newGrid);
+            setDraggingY(true);
+        }
     }
 
     useEffect(() => {
@@ -51,10 +80,14 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     useEffect(() => {
         // Add event listener for keyboard shortcuts
         document.addEventListener('keydown', handleKeyPress);
+        document.addEventListener('mouseup', resetDrag);
+        document.addEventListener('mousemove', handleMouseMove);
 
         // Remove the event listener
         return () => {
           document.removeEventListener('keydown', handleKeyPress);
+          document.removeEventListener('mouseup', resetDrag);
+          document.removeEventListener('mousemove', handleMouseMove);
         };
     }, [handleKeyPress])
 
@@ -67,11 +100,13 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
                             row={rowIdx}
                             col={colIdx}
                             padName={padName}
-                            toggleState={toggleState}
+                            changeState={changeState}
                             state={grid[rowIdx][colIdx]}
                             playing={playing}
                             dragRow={dragRow}
                             setDragRow={setDragRow}
+                            setDragCol={setDragCol}
+                            setDragYStartState={setDragYStartState}
                             position={position}
                         />
                     </Grid>
@@ -80,7 +115,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     }
     const pads = props.pads.map((padName, rowIdx) => { return row(padName, rowIdx) })
     return (
-        <div className="Sequencer">
+        <div className="Sequencer" onMouseUp={resetDrag} onMouseDown={startDrag}>
             <div className="controls">
                 <span onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
                 <span onClick={() => {setPlaying(false); Player.reset()}}>⏹</span>

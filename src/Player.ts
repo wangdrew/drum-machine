@@ -45,11 +45,7 @@ export function play(startStepAt: number = 0) {
 	startStep = startStepAt;
 	playStartTime = Tone.now();
 	blank.start(); // This is necessary. Dunno why.
-	for (let i = 0; i < grid.length; i++) {
-		if (grid[i][startStep]) {
-			drums[i].start();
-		}
-	}
+	playStep(startStep);
 
 	window.requestAnimationFrame(draw);
 }
@@ -69,14 +65,20 @@ export function scheduler() {
 	if (playStartTime > -1) {
 		position += 1;
 		nextStepTime = playStartTime + bpmToInterval(bpm) * position;
-		for (let i = 0; i < grid.length; i++) {
-			if (grid[i][(startStep + position) % 16]) {
-				drums[i].start(nextStepTime);
-				console.log(nextStepTime);
-			}
+		playStep((startStep + position) % 16, nextStepTime);
+	}
+}
+
+export function playStep(step: number, time: number = -1) {
+	for (let i = 0; i < grid.length; i++) {
+		if (!grid[i][step]) continue;
+		if (time > Tone.now()) {
+			for (let j = 0; j < grid[i][step]; j++)
+				drums[i].start(time + j * bpmToInterval(bpm)  / grid[i][step]);
+		} else {
+			drums[i].start();
 		}
 	}
-
 }
 
 export function pause() {
