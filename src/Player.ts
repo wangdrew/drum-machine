@@ -36,16 +36,18 @@ export function updateGrid(newGrid: number[][]) {
 }
 export function updateBpm(newBpm: number) {
 	bpm = newBpm;
+	pause();
+	play((startStep + position) % 16, true);
 }
 
-export function play(startStepAt: number = 0) {
+export function play(startStepAt: number = 0, bpmChange: boolean = false) {
 	console.log("PLAY");
 	position = 0;
-	schedulerInterval = setInterval(scheduler, 50);
+	schedulerInterval = setInterval(scheduler, 100);
 	startStep = startStepAt;
 	playStartTime = Tone.now();
 	blank.start(); // This is necessary. Dunno why.
-	playStep(startStep);
+	if (!bpmChange) playStep(startStep);
 
 	window.requestAnimationFrame(draw);
 }

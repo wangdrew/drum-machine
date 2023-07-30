@@ -12,7 +12,7 @@
   margin-bottom: 30px;
   text-align: center;
 }
-.controls>span {
+.btn {
   border: solid 2px #DDD;
   border-radius: 5px;
   padding: 10px;
@@ -22,6 +22,11 @@
   cursor: pointer;
   width: 10px;
 }
+.bpm {
+  vertical-align: middle;
+  padding-bottom: 16px;
+}
+
 .pad:hover {
   background-color: #DADADA;
 }

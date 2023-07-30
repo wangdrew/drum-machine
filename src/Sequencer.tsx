@@ -11,6 +11,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     const [grid, setGrid] = useState<number[][]>([...Array(ROWS).fill(Array(COLS).fill(0))])
     const [playing, setPlaying] = useState<boolean>(false);
     const [position, setPosition] = useState<number>(0);
+    const [bpm, setBpm] = useState<number>(120);
     
     /* State variables for handling mouse drag. Would love suggestions on how to clean this up lol */
     // Row / column in which the drag is active:
@@ -67,8 +68,12 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
         }
     }
 
+    const handleBpmChange = (e: any) => {
+        setBpm(e.target.value);
+    }
+
     useEffect(() => {
-        Player.init(ROWS, COLS, 120, (position: number) => {
+        Player.init(ROWS, COLS, bpm, (position: number) => {
             setPosition(position);
         })
     }, []);
@@ -117,8 +122,15 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     return (
         <div className="Sequencer" onMouseUp={resetDrag} onMouseDown={startDrag}>
             <div className="controls">
-                <span onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
-                <span onClick={() => {setPlaying(false); Player.reset()}}>⏹</span>
+                <span className="btn" onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
+                <span className="btn" onClick={() => {setPlaying(false); Player.reset()}}>⏹</span>
+                <span>
+                    <input type="range" min="50" max="180" defaultValue={bpm} className="slider" id="bpm" 
+                        onChange={handleBpmChange} 
+                        onMouseUp={() => Player.updateBpm(bpm)}
+                        />
+                </span>&nbsp;
+                <span className="bpm">{bpm} BPM</span>
             </div>
             <Grid container spacing={2} columns={props.columns}>
                 {pads}
