@@ -32,7 +32,6 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
 
     const togglePlaying = () => { 
         playing ? Player.pause() : Player.play(position);
-        setPlaying(!playing)
     };
 
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -41,8 +40,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
             e.preventDefault();
         }
         else if (e.key === "Enter") {
-            //TODO: Needing to set player state in 2 different places is a recipe for disaster. Need to fix this at some point :)
-            setPlaying(false); Player.reset();
+            Player.reset(); Player.pause();
         }
     }
 
@@ -74,9 +72,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     }
 
     useEffect(() => {
-        Player.init(ROWS, COLS, bpm, (position: number) => {
-            setPosition(position);
-        })
+        Player.init(ROWS, COLS, bpm, setPosition, setPlaying)
     }, []);
 
     useEffect(() => {
@@ -123,9 +119,9 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     return (
         <div className="Sequencer" onMouseUp={resetDrag} onMouseDown={startDrag}>
             <div className="controls">
-                <span className="btn" onClick={() => Player.updatePosition(0)}>⏮</span>
+                <span className="btn" onClick={() => Player.reset()}>⏮</span>
                 <span className="btn" onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
-                <span className="btn" onClick={() => {setPlaying(false); Player.reset()}}>⏹</span>
+                <span className="btn" onClick={() => {Player.reset(); Player.pause()}}>⏹</span>
                 <span>
                     <input type="range" min="50" max="180" defaultValue={bpm} className="slider" id="bpm" 
                         onChange={handleBpmChange} 
