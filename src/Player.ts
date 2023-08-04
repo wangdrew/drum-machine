@@ -10,6 +10,7 @@ let grid: number[][];
 let position: number = 0;
 let bpm: number;
 let positionUpdateCallback: Function;
+let playbackStateCallback: Function;
 let playStartTime: number = -1;
 let nextStepTime: number = -1;
 let schedulerInterval: ReturnType<typeof setInterval>;
@@ -18,11 +19,12 @@ let lastStepDrawn: number = -1;
 
 const bpmToInterval = (bpm: number) => 15 / bpm;
 
-export function init(rows: number, cols: number, newBpm: number, newPositionUpdateCallback: Function) {
+export function init(rows: number, cols: number, newBpm: number, newPositionUpdateCallback: Function, newPlaybackStateCallback: Function) {
 	grid = [...Array(rows).fill(Array(cols).fill(0))];
 	bpm = newBpm;
 	position = 0;
 	positionUpdateCallback = newPositionUpdateCallback;
+	playbackStateCallback = newPlaybackStateCallback;
 	playStartTime = -1;
 }
 
@@ -40,9 +42,10 @@ export function updateGrid(newGrid: number[][]) {
 }
 export function updateBpm(newBpm: number) {
 	bpm = newBpm;
+	//Not sure why this is necessary but only works if this is here
 	if (playStartTime >= 0) {
 		pause();
-		play((startStep + position) % 16);
+		play((startStep + position) % 16, true);
 	}
 }
 
@@ -54,7 +57,7 @@ export function play(startStepAt: number = 0, bpmChange: boolean = false) {
 	playStartTime = Tone.now();
 	blank.start(); // This is necessary. Dunno why.
 	if (!bpmChange) playStep(startStep);
-
+	playbackStateCallback(true);
 	window.requestAnimationFrame(draw);
 }
 
@@ -93,10 +96,16 @@ export function pause() {
 	console.log("PAUSING");
 	playStartTime = -1;
 	clearInterval(schedulerInterval);
+	playbackStateCallback(false);
 }
 
 export function reset() {
-	pause();
 	position = 0;
+	startStep = 0;
+	//Not sure why this is necessary but only works if this is here
+	if (playStartTime >= 0) {
+		pause();
+		play(0, true);
+	}
 	positionUpdateCallback(0);
 }
