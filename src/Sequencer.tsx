@@ -41,6 +41,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
             e.preventDefault();
         }
         else if (e.key === "Enter") {
+            //TODO: Needing to set player state in 2 different places is a recipe for disaster. Need to fix this at some point :)
             setPlaying(false); Player.reset();
         }
     }
@@ -122,6 +123,7 @@ const Sequencer: React.FC<SequencerProps> = (props) => {
     return (
         <div className="Sequencer" onMouseUp={resetDrag} onMouseDown={startDrag}>
             <div className="controls">
+                <span className="btn" onClick={() => Player.updatePosition(0)}>⏮</span>
                 <span className="btn" onClick={() => togglePlaying()}>{playing ? "⏸" : "▶"}</span>
                 <span className="btn" onClick={() => {setPlaying(false); Player.reset()}}>⏹</span>
                 <span>

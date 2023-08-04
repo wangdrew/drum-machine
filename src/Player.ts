@@ -29,6 +29,10 @@ export function init(rows: number, cols: number, newBpm: number, newPositionUpda
 export function updatePosition(newPosition: number) {
 	position = newPosition;
 	positionUpdateCallback(position);
+	if (playStartTime >= 0) {
+		pause();
+		play(newPosition, true);
+	}
 }
 
 export function updateGrid(newGrid: number[][]) {
@@ -36,8 +40,10 @@ export function updateGrid(newGrid: number[][]) {
 }
 export function updateBpm(newBpm: number) {
 	bpm = newBpm;
-	pause();
-	play((startStep + position) % 16, true);
+	if (playStartTime >= 0) {
+		pause();
+		play((startStep + position) % 16);
+	}
 }
 
 export function play(startStepAt: number = 0, bpmChange: boolean = false) {
