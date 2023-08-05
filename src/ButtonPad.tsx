@@ -62,14 +62,12 @@ const ButtonPad: React.FC<ButtonPadProps> = ({
         if (state >= 2) changeState(row, col);
     }
 
-    
-
     //Compute styles
     let bgColor = 'white';
-    if (position == col) bgColor = playing ? '#CCC' : '#DDD';
+    if (position === col) bgColor = playing ? '#CCC' : '#DDD';
     if (state) bgColor = 'aquamarine';
     let style = {backgroundColor: bgColor}
-    if (col % 4 == 0) style = {...style, ...{borderLeftWidth: 3}};
+    if (col % 4 === 0) style = {...style, ...{borderLeftWidth: 3}};
 
     return (
         <Card style={style} className="pad" variant="outlined" onMouseDown={mouseDown} onClick={onClick} onMouseUp={stopDrag} onMouseEnter={onHover}>
